@@ -5,6 +5,7 @@
 #include <deque>
 #include <condition_variable>
 #include "TrafficObject.h"
+#include<chrono>
 
 // forward declarations to avoid include cycle
 class Vehicle;
@@ -49,7 +50,6 @@ public:
 
     void waitForGreen();
     void simulate();
-
     TrafficLightPhase getCurrentPhase();
 
 private:
