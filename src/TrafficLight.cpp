@@ -41,6 +41,7 @@ TrafficLightPhase TrafficLight::getCurrentPhase()
 {
     return _currentPhase;
 }
+*/
 
 void TrafficLight::simulate()
 {
@@ -48,7 +49,7 @@ void TrafficLight::simulate()
 }
 
 // virtual function which is executed in a thread
-*/
+
 
 // https://stackoverflow.com/questions/7560114/random-number-c-in-some-range
 
@@ -79,9 +80,7 @@ void TrafficLight::cycleThroughPhases()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-        
-
-
+    
 
         if(loop_duration > light_cycle_duration){
             if (_currentPhase == red)
@@ -92,7 +91,7 @@ void TrafficLight::cycleThroughPhases()
             auto light_state = _currentPhase;
             auto update_state = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::to_be_defined, _msgQueue, std::move(light_state)); //fix me
             update_state.wait(); // wait for resuls
-            light_cycle_duration = static_cast <float>(distr(eng)/100.0);
+            //light_cycle_duration = static_cast <float>(distr(eng)/100.0);
             previous_time = std::chrono::high_resolution_clock::now();
         
         }
