@@ -49,6 +49,9 @@ void TrafficLight::simulate()
 
 // virtual function which is executed in a thread
 */
+
+// https://stackoverflow.com/questions/7560114/random-number-c-in-some-range
+
 void TrafficLight::cycleThroughPhases()
 {
     // FP.2a : Implement the function with an infinite loop that measures the time between two loop cycles 
@@ -59,6 +62,12 @@ void TrafficLight::cycleThroughPhases()
  
     auto previous_time = std::chrono::high_resolution_clock::now();
 
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std:: uniform_int_distribution<> distr(4*100,6*100); //in milisec
+
+    
+
 
     while (true) {
 
@@ -66,9 +75,27 @@ void TrafficLight::cycleThroughPhases()
 
         auto loop_duration = std::chrono::duration_cast<std::chrono::seconds> (current_time - previous_time);
 
+        float light_cycle_duration = static_cast <float>(distr(eng)/100.0);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-        previous_time = std::chrono::high_resolution_clock::now();
+        
+
+
+
+        if(loop_duration > light_cycle_duration){
+            if (_currentPhase == red)
+                _currentPhase = green;
+            if (_currentPhase == green)
+                _currentPhase = red;
+
+            auto light_state = _currentPhase;
+            auto update_state = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::to_be_defined, _msgQueue, std::move(light_state)); //fix me
+            update_state.wait(); // wait for resuls
+            light_cycle_duration = static_cast <float>(distr(eng)/100.0);
+            previous_time = std::chrono::high_resolution_clock::now();
+        
+        }
 
     } 
 }
