@@ -62,7 +62,7 @@ void TrafficLight::cycleThroughPhases()
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles.
 
  
-    auto previous_time = std::chrono::high_resolution_clock::now();
+    auto previous_time = std::chrono::system_clock::now();
 
     std::random_device rd;
     std::mt19937 eng(rd());
@@ -73,25 +73,29 @@ void TrafficLight::cycleThroughPhases()
 
     while (true) {
 
-        auto current_time = std::chrono::high_resolution_clock::now();
+        //auto current_time = std::chrono::system_clock::now();
 
-        auto loop_duration = std::chrono::duration_cast<std::chrono::seconds> (current_time - previous_time);
+        long loop_duration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - previous_time).count();
 
-        float light_cycle_duration = static_cast <float>(distr(eng)/100.0);
+        //long loop_duration = std::chrono::duration_cast<std::chrono::seconds> (current_time - previous_time);
+        //auto loop_duration =(current_time - previous_time);
+
+        auto light_cycle_duration = distr(eng)/100.0; //static_cast <float>(distr(eng)/100.0);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     
 
-        if(loop_duration > light_cycle_duration){
+        //if(loop_duration > light_cycle_duration){
+        if(loop_duration >= light_cycle_duration){    
             if (_currentPhase == red)
                 _currentPhase = green;
             if (_currentPhase == green)
                 _currentPhase = red;
 
             auto light_state = _currentPhase;
-            auto update_state = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, _msgQueue, std::move(light_state)); //fix me
-            update_state.wait(); // wait for resuls
+           // auto update_state = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, _msgQueue, std::move(light_state)); //fix me
+            //update_state.wait(); // wait for resuls
             //light_cycle_duration = static_cast <float>(distr(eng)/100.0);
             previous_time = std::chrono::high_resolution_clock::now();
         
