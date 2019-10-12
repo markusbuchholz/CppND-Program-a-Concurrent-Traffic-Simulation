@@ -10,10 +10,10 @@
 // forward declarations to avoid include cycle
 class Vehicle;
 
-    enum TrafficLightPhase {
-        red,
-        green
-    };
+enum TrafficLightPhase {
+    red,
+    green
+};
 
 
 // FP.3 Define a class „MessageQueue“ which has the public methods send and receive. 
@@ -33,8 +33,8 @@ T receive();
 
 private:
 
-std::deque <TrafficLightPhase> _queue;
-// std::deque<T> _queue;
+//std::deque <TrafficLightPhase> _queue;
+std::deque<T> _queue;
 std::condition_variable _condition;
 std::mutex _mutex;
 
@@ -52,7 +52,7 @@ public:
     // constructor 
     TrafficLight();
     // desctructor
-    ~TrafficLight();
+    //~TrafficLight();
 
     // getters / setters
 

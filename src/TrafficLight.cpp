@@ -2,6 +2,8 @@
 #include <random>
 #include "TrafficLight.h"
 #include <chrono>
+#include <future>
+
 
 /* Implementation of class "MessageQueue" */
 
@@ -77,6 +79,7 @@ void TrafficLight::simulate()
 
 // https://stackoverflow.com/questions/7560114/random-number-c-in-some-range
 
+
 void TrafficLight::cycleThroughPhases()
 {
     // FP.2a : Implement the function with an infinite loop that measures the time between two loop cycles 
@@ -84,7 +87,6 @@ void TrafficLight::cycleThroughPhases()
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds. 
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles.
 
- 
     auto previous_time = std::chrono::system_clock::now();
 
     std::random_device rd;
@@ -113,13 +115,13 @@ void TrafficLight::cycleThroughPhases()
         if(loop_duration >= light_cycle_duration){    
             if (_currentPhase == red)
                 _currentPhase = green;
-            if (_currentPhase == green)
-                _currentPhase = red;
+            else{_currentPhase = red;}
+                
 
             auto light_state = _currentPhase;
-           // auto update_state = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, _msgQueue, std::move(light_state)); //fix me
-            //update_state.wait(); // wait for resuls
-            //light_cycle_duration = static_cast <float>(distr(eng)/100.0);
+            auto update_state = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, &_queue_member, std::move(light_state)); //fix me
+            update_state.wait(); // wait for resuls
+            light_cycle_duration = static_cast <float>(distr(eng)/100.0);
             previous_time = std::chrono::high_resolution_clock::now();
         
         }
