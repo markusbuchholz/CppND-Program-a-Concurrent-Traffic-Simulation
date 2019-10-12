@@ -26,10 +26,10 @@ class MessageQueue
 {
 public:
 
-void send(TrafficLightPhase && light_state);
-TrafficLightPhase receive();
-//void send(T && msg);
-// T receive();
+//void send(TrafficLightPhase && light_state);
+//TrafficLightPhase receive();
+void send(T && msg);
+T receive();
 
 private:
 
